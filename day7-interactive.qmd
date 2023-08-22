@@ -86,3 +86,143 @@ left_join_example <- left_join(animals, sites)
 ```{r}
 inner_join_examples <- inner_join(animals, sites)
 ```
+
+## Date/Times with lubridate()
+
+ymd: if date is in year-month-day
+
+mdy: if date is in month-day-year
+
+dmy: if date is in day-month-year
+
+```{r}
+my_date_1 <- lubridate::mdy("03-15-1998")
+
+class(my_date_1)
+
+my_date_2 <- lubridate::mdy("11/7/2003")
+
+class(my_date_2)
+
+my_date_3 <- lubridate::dmy("08-Jun-1974")
+
+my_date_3
+
+my_date_4 <- lubridate::ymd("19740606")
+
+my_date_4
+```
+
+Can we break the lubridate parsing function?
+
+```{r}
+my_date_5 <- lubridate::dmy("05062012")
+
+my_date_5
+```
+
+Adding time to our dates
+
+```{r}
+time_1 <- lubridate::ymd_hm("2020-06-13 11:18")
+
+time_1
+
+#Parse June 2, 1982 at 4pm UTC (16:00) as a date in R.
+time_2 <- lubridate::dmy_hm("02061982 16:00")
+
+time_2
+
+
+```
+
+```{r}
+with_tz(time_2, "America/Los_Angeles")
+
+with_tz(time_2, "America/New_York")
+```
+
+```{r}
+now <- with_tz(Sys.time(), "Europe/Belgrade")
+
+now
+```
+
+Access different parts of date-times
+
+```{r}
+later <- lubridate::day(now)
+
+tomorrow <- lubridate::week(now)
+
+minute2 <- lubridate::minute(now)
+
+later
+tomorrow
+minute2
+```
+
+```{r}
+urchin_counts <- data.frame(
+  date = c("Oct 12, 2004", "October 18, 2007", "February 12, 2003", "Feb 14, 2008"),
+  species = c("purple", "red", "red", 'red'),
+  size_mm = c(19, 24, 18, 11)
+)
+```
+
+```{r}
+urchin_mean_by_month <- urchin_counts %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  mutate(month = lubridate::month(date)) %>% 
+  group_by(month) %>% 
+  summarise(mean_size = mean(size_mm))
+
+```
+
+## Strings with stringr 
+
+```{r}
+#Use str_detect to detect a string pattern
+
+my_string <- "Teddy loves sammon and kibble and toys"
+
+str_detect(my_string, pattern = "sammon")
+```
+
+```{r}
+str_detect(my_string, "hot weather")
+```
+
+```{r}
+my_string_2 <- c("burrito", "fish taco", "taco_salad", "super-bUrrito")
+
+str_detect(my_string_2, pattern = "taco")
+```
+
+```{r}
+starwars %>% 
+  filter(str_detect(name, pattern = "Skywalker"))
+```
+
+```{r}
+starwars %>% 
+  mutate(name_new = str_replace(name, pattern = "Sky", replace = "Fire"))
+```
+
+str_trim to get rid of leading and trailing white space
+
+str_squish to get rid of leading and trailing white space AND excess interior white space
+
+```{r}
+my_string_3 <- "     Hi my name        is Teddy !!!!!      "
+```
+
+```{r}
+str_trim(my_string_3)
+str_squish(my_string_3)
+```
+
+```{r}
+starwars %>% 
+  mutate(species_lower = str_to_lower(species))
+```
