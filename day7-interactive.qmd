@@ -9,9 +9,10 @@ execute:
 ```{r}
 library(tidyverse)
 library(palmerpenguins)
+library(datapasta)
 ```
 
-## Data wrangling refresher 
+## Data wrangling refresher
 
 1.  Starting from penguins, write a single piped seq in which:
     1.  only include penguins at dream and biscoe islands
@@ -50,4 +51,38 @@ penguins %>%
 #Count is just wrapping together group_by + summarize  + n() to get counts of observations
 penguins %>% 
   count(species, island, sex)
+```
+
+```{r}
+#NOT REPRODUCABLE
+animals <- data.frame(
+  stringsAsFactors = FALSE,
+          location = c("lagoon", "bluff", "creek", "oaks", "bluff"),
+           species = c("bobcat", "coyote", "fox", "squirrel", "bobcat"),
+          maturity = c("adult", "juvenile", "adult", "juvenile", "adult")
+)
+```
+
+```{r}
+sites <- data.frame(
+  stringsAsFactors = FALSE,
+          location = c("beach", "lagoon", "bluff", "oaks"),
+    full_site_name = c("Goleta Beach","UCSB Lagoon",
+                       "Ellwood Mesa","Fremont Campground"),
+      jurisdiction = c("SB City", "UCSB", "SB City", "USFS")
+)
+```
+
+```{r}
+#Most conservative join
+full_join_example <- full_join(animals, sites)
+```
+
+```{r}
+#Left join example(keeps everything in left table, and only keep right table if it has exact match for key value)
+left_join_example <- left_join(animals, sites)
+```
+
+```{r}
+inner_join_examples <- inner_join(animals, sites)
 ```
