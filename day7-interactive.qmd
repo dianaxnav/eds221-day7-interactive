@@ -1,0 +1,53 @@
+---
+title: "Morning session"
+format: html
+editor: visual
+execute:
+  warning: TRUE
+---
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Data wrangling refresher 
+
+1.  Starting from penguins, write a single piped seq in which:
+    1.  only include penguins at dream and biscoe islands
+    2.  remove the year and sex variables
+    3.  add a new column body_mass_kg w penguin mass converted from g to kg
+    4.  rename the island variable to location
+
+```{r}
+dream_biscoe <- penguins %>% 
+  filter(island %in% c("Dream", "Biscoe")) %>% 
+  select(-year, -sex) %>% 
+  mutate(body_mass_kg = body_mass_g / 1000) %>% 
+  rename(location = island)
+```
+
+2.  Write a single piped sequence to:
+    2.  limit to Adelie penguins
+    3.  Remove any observations where flipper_length_mm is NA (lis.na()) or drop_na)
+    4.  Group the data by sex
+    5.  Create a summary table that contains the mean, std, and sample size of flipper length for male and female Adelie penguins
+
+```{r}
+deli_sum <- penguins %>% 
+  filter(species == "Adelie", !is.na(flipper_length_mm)) %>% 
+  group_by(sex) %>% 
+  summarise(mean_flipper = mean(flipper_length_mm), 
+            sd(flipper_length_mm),
+            sample_size = n())
+```
+
+```{r}
+penguins %>% 
+  group_by(species, island, sex) %>% 
+  summarize(sample_size = n())
+
+#Count is just wrapping together group_by + summarize  + n() to get counts of observations
+penguins %>% 
+  count(species, island, sex)
+```
